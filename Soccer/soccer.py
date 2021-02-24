@@ -229,8 +229,8 @@ class Soccer(commands.Cog):
                 else:
                     return dict_resp, resp.status
 
-    @commands.command(name="lineup")
-    async def lineup(self, ctx):
+    @commands.command(name="mcfclineup")
+    async def mcfclineup(self, ctx):
         """Delivers the lineup of Manchester City"""
         pass
 
