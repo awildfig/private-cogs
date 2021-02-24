@@ -278,8 +278,8 @@ class Soccer(commands.Cog):
         """Score in the current Manchester City match"""
         pass
 
-    @commands.command(name="fixtures")
-    async def fixtures(self, ctx):
+    @commands.command(name="mcfcfixtures")
+    async def mcfcfixtures(self, ctx):
         """Upcoming fixtures of Manchester City"""
         current_time = datetime.datetime.now(pytz.UTC).strftime("%G-%m-%d")
         year, month, day = current_time.split("-")
