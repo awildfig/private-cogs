@@ -1,0 +1,19 @@
+{
+	"author": [
+		"benno1237"
+	],
+	"description": "Soccer bot.",
+    "install_msg": "Thanks for installing, have fun.",
+	"short": "Soccer utility stuff.",
+	"tags": [
+		"Soccer"
+	],
+	"requirements": [
+		"pandas",
+        "matplotlib",
+        "datetime",
+        "pytz"
+	],
+	"type": "COG",
+	"end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}
