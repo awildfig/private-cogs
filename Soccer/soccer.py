@@ -327,10 +327,10 @@ class Soccer(commands.Cog):
         if resp["goals"] != self.goals:
             for goal in resp["goals"]:
                 if goal not in self.goals:
-                    embed = discord.Embed(color=discord.Color.blue(), description="Goal for {}!".format(goal["team"]["name"]))
+                    embed = discord.Embed(color=discord.Color.blue(), description="Goal :goal: for {}!".format(goal["team"]["name"]))
                     embed.add_field(name="Scorer", value=goal["scorer"]["name"], inline=True)
                     if goal["assist"] != None:
-                        embed.add_field(name="Assist", value=goal["assist"]["name"], inline=True)
+                        embed.add_field(name="Assist :handshake:", value=goal["assist"]["name"], inline=True)
                     embed.set_footer(text="Min: {}".format(goal["minute"]))
                     await self.send_commentary(embed)
             updated = True
@@ -339,9 +339,9 @@ class Soccer(commands.Cog):
             for booking in resp["bookings"]:
                 if booking not in self.bookings:
                     if booking["card"] == "YELLOW_CARD":
-                        text = "Yellow card for {} from {}!".format(booking["player"]["name"], booking["team"]["name"])
+                        text = "Yellow card :yellow_square: for {} from {}!".format(booking["player"]["name"], booking["team"]["name"])
                     elif booking["card"] == "RED_CARD":
-                        text = "Red card for {} from {}!".format(booking["player"]["name"], booking["team"]["name"])
+                        text = "Red card :red_square: for {} from {}!".format(booking["player"]["name"], booking["team"]["name"])
                     else:
                         text = "Event not found: {}".format(booking["card"])
                     embed = discord.Embed(color=discord.Color.blue(), description=text)
@@ -352,7 +352,7 @@ class Soccer(commands.Cog):
         if resp["substitutions"] != self.substitutions:
             for substitution in resp["substitutions"]:
                 if substitution not in self.substitutions:
-                    embed = discord.Embed(color=discord.Color.blue(), description="Substitution for {}!".format(substitution["team"]["name"]))
+                    embed = discord.Embed(color=discord.Color.blue(), description="Substitution :arrows_counterclockwise: for {}!".format(substitution["team"]["name"]))
                     embed.add_field(name="Player in", value=substitution["playerIn"]["name"], inline=True)
                     embed.add_field(name="Player out", value=substitution["playerOut"]["name"], inline=True)
                     embed.set_footer(text="Min: {}".format(substitution["minute"]))
@@ -796,66 +796,67 @@ class Soccer(commands.Cog):
         if (await self.config.linuep() != None) and (self.fetch_live_match.is_running() == True):
             self.start_live.cancel()
 
-    @commands.command()
-    async def temp(self, ctx):
-        await self.reset_live()
-        channel = discord.utils.get(self.guild.channels, id=await self.config.channel_live_id())
-        await channel.purge(limit=100)
-        date = datetime.datetime.utcnow().date()
+    # @commands.command()
+    # async def temp(self, ctx):
+    #     await self.reset_live()
+    #     channel = discord.utils.get(self.guild.channels, id=await self.config.channel_live_id())
+    #     await channel.purge(limit=100)
+    #     date = datetime.datetime.utcnow().date()
 
-        url = "http://api.football-data.org/v2/teams/76/matches?dateFrom={}&dateTo={}".format(str(date), str(date))
-        resp, status = await self.api_call_paid(url, return_status=True)
-        if status == 200:
-            if resp["matches"] != []:
-                date, time = self.convert_time(resp["matches"][0]["utcDate"])
-                embed = discord.Embed(color=discord.Color.blue(), description="Match for today", url="https://native-stats.org/team/65/stats")
-                if resp["matches"][0]["venue"] != None:
-                    embed.add_field(name="{} vs. {}".format(resp["matches"][0]["homeTeam"]["name"], resp["matches"][0]["awayTeam"]["name"]), value="{} at {} \n{}".format(date, time, resp["matches"][0]["venue"]))
-                else:
-                    embed.add_field(name="{} vs. {}".format(resp["matches"][0]["homeTeam"]["name"], resp["matches"][0]["awayTeam"]["name"]), value="{} at {}".format(date, time))    
+    #     url = "http://api.football-data.org/v2/teams/76/matches?dateFrom={}&dateTo={}".format(str(date), str(date))
+    #     resp, status = await self.api_call_paid(url, return_status=True)
+    #     if status == 200:
+    #         if resp["matches"] != []:
+    #             date, time = self.convert_time(resp["matches"][0]["utcDate"])
+    #             embed = discord.Embed(color=discord.Color.blue(), description="Match for today", url="https://native-stats.org/team/65/stats")
+    #             if resp["matches"][0]["venue"] != None:
+    #                 embed.add_field(name="{} vs. {}".format(resp["matches"][0]["homeTeam"]["name"], resp["matches"][0]["awayTeam"]["name"]), value="{} at {} \n{}".format(date, time, resp["matches"][0]["venue"]))
+    #             else:
+    #                 embed.add_field(name="{} vs. {}".format(resp["matches"][0]["homeTeam"]["name"], resp["matches"][0]["awayTeam"]["name"]), value="{} at {}".format(date, time))    
 
-                url = "https://api.football-data.org/v2/matches/{}".format(resp["matches"][0]["id"])
-                resp_match, status = await self.api_call_paid(url, return_status=True)
+    #             url = "https://api.football-data.org/v2/matches/{}".format(resp["matches"][0]["id"])
+    #             resp_match, status = await self.api_call_paid(url, return_status=True)
 
-                try:
-                    h2h = resp_match["head2head"]
-                    embed.add_field(name="**Head to head statistics**", value="Matches: {}\nTotal goals: {}".format(h2h["numberOfMatches"], h2h["totalGoals"]), inline=False)
-                    if h2h["homeTeam"]["name"] == "Manchester City FC":
-                        embed.add_field(name=h2h["homeTeam"]["name"], value="Wins: {}\nDraws: {}\nLosses: {}".format(h2h["homeTeam"]["wins"], h2h["homeTeam"]["draws"], h2h["homeTeam"]["losses"]), inline=True)
-                    else:
-                        embed.add_field(name=h2h["awayTeam"]["name"], value="Wins: {}\nDraws: {}\nLosses: {}".format(h2h["awayTeam"]["wins"], h2h["awayTeam"]["draws"], h2h["awayTeam"]["losses"]), inline=True)
-                except:
-                    pass
+    #             try:
+    #                 h2h = resp_match["head2head"]
+    #                 embed.add_field(name="**Head to head statistics**", value="Matches: {}\nTotal goals: {}".format(h2h["numberOfMatches"], h2h["totalGoals"]), inline=False)
+    #                 if h2h["homeTeam"]["name"] == "Manchester City FC":
+    #                     embed.add_field(name=h2h["homeTeam"]["name"], value="Wins: {}\nDraws: {}\nLosses: {}".format(h2h["homeTeam"]["wins"], h2h["homeTeam"]["draws"], h2h["homeTeam"]["losses"]), inline=True)
+    #                 else:
+    #                     embed.add_field(name=h2h["awayTeam"]["name"], value="Wins: {}\nDraws: {}\nLosses: {}".format(h2h["awayTeam"]["wins"], h2h["awayTeam"]["draws"], h2h["awayTeam"]["losses"]), inline=True)
+    #             except:
+    #                 pass
 
-                embed.set_footer(text="More stats: https://native-stats.org/team/65/stats")
-                embed.set_author(name="The Manchester City Discord", icon_url=self.guild.icon_url)
-                embed.set_thumbnail(url=self.guild.icon_url)
-                embed.set_image(url=resp_match["match"]["competition"]["area"]["ensignUrl"])
+    #             embed.set_footer(text="More stats: https://native-stats.org/team/65/stats")
+    #             embed.set_author(name="The Manchester City Discord", icon_url=self.guild.icon_url)
+    #             embed.set_thumbnail(url=self.guild.icon_url)
+    #             embed.set_image(url=resp_match["match"]["competition"]["area"]["ensignUrl"])
 
-                league = resp_match["match"]["competition"]["name"]
-                if league == "Premier League":
-                    league = "pl"
-                elif league == "UEFA Champions League":
-                    league = "cl"
-                elif league == "FA Cup":
-                    league = "fa"
+    #             league = resp_match["match"]["competition"]["name"]
+    #             if league == "Premier League":
+    #                 league = "pl"
+    #             elif league == "UEFA Champions League":
+    #                 league = "cl"
+    #             elif league == "FA Cup":
+    #                 league = "fa"
 
-                await self.config.live_match_id.set(resp["matches"][0]["id"])
-                await channel.send(embed=embed)
+    #             await self.config.live_match_id.set(resp["matches"][0]["id"])
+    #             await channel.send(embed=embed)
 
-                if league in self.subscribed_leagues:
-                    league_id = await self.config_get(league, "season_id_latest")
-                    url = "https://football.elenasport.io/v2/seasons/{}/upcoming".format(league_id)
-                    resp, status = await self.api_call(api_url=url, return_status=True)
-                    if (status == 200) and (resp["data"] != []):
-                        for item in resp["data"]:
-                            if (item["idHome"] == 99) or (item["idAway"] == 99):
-                                await self.config.live_match_id_elena.set(item["id"])
+    #             if league in self.subscribed_leagues:
+    #                 league_id = await self.config_get(league, "season_id_latest")
+    #                 url = "https://football.elenasport.io/v2/seasons/{}/upcoming".format(league_id)
+    #                 resp, status = await self.api_call(api_url=url, return_status=True)
+    #                 if (status == 200) and (resp["data"] != []):
+    #                     for item in resp["data"]:
+    #                         if (item["idHome"] == 99) or (item["idAway"] == 99):
+    #                             await self.config.live_match_id_elena.set(item["id"])
 
-                time = resp_match["match"]["utcDate"]
-                await self.config.time.set(time)
-                self.start_live.start()
+    #             time = resp_match["match"]["utcDate"]
+    #             await self.config.time.set(time)
+    #             self.start_live.start()
 
-    @commands.command()
-    async def temp2(self, ctx):
-        print(self.start_live.is_running())
+    # @commands.command()
+    # async def temp2(self, ctx):
+    #     print(self.start_live.is_running())
+    #     await ctx.send(":goal:")
